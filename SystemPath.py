@@ -1,25 +1,34 @@
-from bisect import bisect_left
 from pathlib import Path
 
-extensoesENomes = (
-    (("Executaveis"         ), ["exe", "msi", "jar"]),
-    (("Compactados"         ), ["zip", "rar", "arc", "arj", "bin", "dmg", "gz", "gzip", "hqx", "sit", "sitx", "se", "ace", "uu", "uue", "7z"]),
-    (("Videos"              ), ["mp4", "mov", "avi", "flv", "mwv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat"]),
-    (("Textos"              ), ["txt", "pdf"]),
-    (("Imagens"             ), ["png", "gif", "jpg", "jpeg", "tiff", "tif", "raw", "bmp", "psd", "eps", "svg", "ai", "pic", "wmf", "webp", "dwg", "pptx", "odp"]),
-    (("Words"               ), ["docx", "docm", "dotx", "dotm", "doc", "dot", "odf", "odt"]),
-    (("Programação"         ), ["lib", "css", "html", "js", "cpp", "c", "h", "hpp", "py"]),
-    (("Arquivos de dados"   ), ["ini", "log"]),
-    (("Máquinas Virtuais"   ), ["ova"])
+nomesEExtensoes = (
+    (("Arquivos e Pastas variados"), ("sem categoria", "pasta")),
+
+    (("Executaveis"         ), ("exe", "msi", "jar")),
+    (("Compactados"         ), ("zip", "rar", "arc", "arj", "bin", "dmg", "gz", "gzip", "hqx", "sit", "sitx", "se", "ace", "uu", "uue", "7z")),
+    (("Videos"              ), ("mp4", "mov", "avi", "flv", "mwv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat")),
+    (("Textos"              ), ("txt", "pdf")),
+    (("Imagens"             ), ("png", "gif", "jpg", "jpeg", "tiff", "tif", "raw", "bmp", "psd", "eps", "svg", "ai", "pic", "wmf", "webp", "dwg", "pptx", "odp")),
+    (("Words"               ), ("docx", "docm", "dotx", "dotm", "doc", "dot", "odf", "odt")),
+    (("Programação"         ), ("lib", "css", "html", "js", "cpp", "c", "h", "hpp", "py")),
+    (("Arquivos de dados"   ), ("ini", "log")),
+    (("Máquinas Virtuais"   ), ("ova"))
 )
 
-def acharCategoriaArquivo(extensao):
-    global extensoesENomes
-    for X in range(len(extensoesENomes)):
-        if extensao in extensoesENomes[X][1]:
-            return extensoesENomes[X][0]
+def isPastaUmaPastaDoPrograma(arquivo : Path):
+    global nomesEExtensoes
+    for X in range(len(nomesEExtensoes)):
+        if arquivo.name == nomesEExtensoes[X][0]:
+            return True
     
-    return "None"
+    return False
+
+def acharCategoriaArquivo(extensao):
+    global nomesEExtensoes
+    for X in range(len(nomesEExtensoes)):
+        if extensao in nomesEExtensoes[X][1]:
+            return nomesEExtensoes[X][0]
+    
+    return "sem categoria"
 
 def lerDiretoriosArquivo(nomeArquivo):
 

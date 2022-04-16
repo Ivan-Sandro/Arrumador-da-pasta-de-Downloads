@@ -8,15 +8,24 @@ for diretorio in diretorios:
         continue
 
     for arquivo in diretorio.glob('*'):
-        categoriaDoArquivo = sp.acharCategoriaArquivo(arquivo.suffix[1:])
-        
-        if categoriaDoArquivo != "None":
-            novoDiretorioDoArquivo = sp.Path(diretorio, categoriaDoArquivo)
 
-            if not novoDiretorioDoArquivo.is_dir():
-                novoDiretorioDoArquivo.mkdir(parents=True, exist_ok=True)
+        if arquivo.is_dir():
+            if sp.isPastaUmaPastaDoPrograma(arquivo) is True:
+                continue
 
-            if sp.checarArquivoRepetido(arquivo, novoDiretorioDoArquivo) == True:
-                arquivo = arquivo.rename(sp.Path(arquivo.parent, sp.getNovoNomeArquivoRepetido(arquivo, novoDiretorioDoArquivo)))
+            categoriaDoArquivo = sp.acharCategoriaArquivo("pasta")
+        else:
+            categoriaDoArquivo = sp.acharCategoriaArquivo(arquivo.suffix[1:])    
 
-            moverArquivoDePasta(arquivo, novoDiretorioDoArquivo)
+        novoDiretorioDoArquivo = sp.Path(diretorio, categoriaDoArquivo)
+
+        if not novoDiretorioDoArquivo.is_dir():
+            novoDiretorioDoArquivo.mkdir(parents=True, exist_ok=True)
+
+        if sp.checarArquivoRepetido(arquivo, novoDiretorioDoArquivo) == True:
+            arquivo = arquivo.rename(sp.Path(arquivo.parent, sp.getNovoNomeArquivoRepetido(arquivo, novoDiretorioDoArquivo)))
+
+        moverArquivoDePasta(arquivo, novoDiretorioDoArquivo)
+
+            
+
