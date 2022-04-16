@@ -2,35 +2,23 @@ from bisect import bisect_left
 from pathlib import Path
 
 extensoesENomes = (
-    (["exe", "msi", "jar"],                                                                                                             ("Executaveis"         )),
-    (["zip", "rar", "arc", "arj", "bin", "dmg", "gz", "gzip", "hqx", "sit", "sitx", "se", "ace", "uu", "uue", "7z"],                    ("Compactados"         )),
-    (["mp4", "mov", "avi", "flv", "mwv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat"],                                       ("Videos"              )),
-    (["txt", "pdf"],                                                                                                                    ("Textos"              )),
-    (["png", "gif", "jpg", "jpeg", "tiff", "tif", "raw", "bmp", "psd", "eps", "svg", "ai", "pic", "wmf", "webp", "dwg", "pptx", "odp"], ("Imagens"             )),
-    (["docx", "docm", "dotx", "dotm", "doc", "dot", "odf", "odt"],                                                                      ("Words"               )),
-    (["lib", "css", "html", "js", "cpp", "c", "h", "hpp", "py"],                                                                        ("Programação"         )),
-    (["ini", "log"],                                                                                                                    ("Arquivos de dados"   )),
-    (["ova"],                                                                                                                           ("Máquinas Virtuais"   ))
+    (("Executaveis"         ), ["exe", "msi", "jar"]),
+    (("Compactados"         ), ["zip", "rar", "arc", "arj", "bin", "dmg", "gz", "gzip", "hqx", "sit", "sitx", "se", "ace", "uu", "uue", "7z"]),
+    (("Videos"              ), ["mp4", "mov", "avi", "flv", "mwv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat"]),
+    (("Textos"              ), ["txt", "pdf"]),
+    (("Imagens"             ), ["png", "gif", "jpg", "jpeg", "tiff", "tif", "raw", "bmp", "psd", "eps", "svg", "ai", "pic", "wmf", "webp", "dwg", "pptx", "odp"]),
+    (("Words"               ), ["docx", "docm", "dotx", "dotm", "doc", "dot", "odf", "odt"]),
+    (("Programação"         ), ["lib", "css", "html", "js", "cpp", "c", "h", "hpp", "py"]),
+    (("Arquivos de dados"   ), ["ini", "log"]),
+    (("Máquinas Virtuais"   ), ["ova"])
 )
-
-def colocarExtensoesENomesEmOrdemAlfabetica():
-    global extensoesENomes
-    for X in range(len(extensoesENomes)):
-        extensoesENomes[X][0].sort()
-
-colocarExtensoesENomesEmOrdemAlfabetica()
-
-def pesquisaBinaria(elemento, vetorDeElementos):
-    possivelLocal = bisect_left(vetorDeElementos, elemento)
-    
-    return possivelLocal if possivelLocal < len(vetorDeElementos) and vetorDeElementos[possivelLocal] == elemento else -1
 
 def acharCategoriaArquivo(extensao):
     global extensoesENomes
     for X in range(len(extensoesENomes)):
-        if pesquisaBinaria(extensao, extensoesENomes[X][0]) != -1:
-            return extensoesENomes[X][1]
-
+        if extensao in extensoesENomes[X][1]:
+            return extensoesENomes[X][0]
+    
     return "None"
 
 def lerDiretoriosArquivo(nomeArquivo):
@@ -50,7 +38,7 @@ def getTamanhoExtensaoRepetisao(arquivo : Path):
         if letra == ')' or letra.isdigit():
             tamanhoExtensao += 1
         elif letra == '(':
-            tamanhoExtensao += 1
+            tamanhoExtensao += 2
             break
         else:
             tamanhoExtensao = 0
@@ -63,14 +51,14 @@ def getNumeroExtensaoRepetisao(arquivo : Path):
     if tamanhoExtensaoRepetisao == 0:
         return 0
     else:
-        return int(arquivo.stem[-tamanhoExtensaoRepetisao+1:-1])
+        return int(arquivo.stem[-tamanhoExtensaoRepetisao+2:-1])
 
 def removerExtensaoRepetisao(arquivo : Path):
     tamanhoExtensaoRepetisao = getTamanhoExtensaoRepetisao(arquivo)
     if tamanhoExtensaoRepetisao == 0:
         return arquivo.stem
     else:
-        return arquivo.stem[0:-tamanhoExtensaoRepetisao-1]
+        return arquivo.stem[0:-tamanhoExtensaoRepetisao]
 
 def checarArquivoRepetido(arquivo : Path, diretorio : Path):
     for arquivoDiretorio in diretorio.glob(f"*{arquivo.suffix}"):
@@ -80,14 +68,16 @@ def checarArquivoRepetido(arquivo : Path, diretorio : Path):
     return False
 
 def getNovoNomeArquivoRepetido(arquivo : Path, diretorio : Path):
-    maiorNumeroExtensao = 0
+    NumeroExtensaoPossivel = 0
     nomeArquivoSemExtensaoRepetisao = removerExtensaoRepetisao(arquivo)
 
     for arquivoDiretorio in diretorio.glob(f"*{arquivo.suffix}"):
         if nomeArquivoSemExtensaoRepetisao == removerExtensaoRepetisao(arquivoDiretorio):
-            numeroExtensao = getNumeroExtensaoRepetisao(arquivoDiretorio)
+            numeroExtensaoDiretorio = getNumeroExtensaoRepetisao(arquivoDiretorio)
 
-            if (maiorNumeroExtensao < numeroExtensao):
-                maiorNumeroExtensao = numeroExtensao
+            if (NumeroExtensaoPossivel == numeroExtensaoDiretorio-1):
+                NumeroExtensaoPossivel = numeroExtensaoDiretorio
+            else:
+                break
 
-    return f"{removerExtensaoRepetisao(arquivo)} ({str(maiorNumeroExtensao+1)}){arquivo.suffix}"
+    return f"{removerExtensaoRepetisao(arquivo)} ({str(NumeroExtensaoPossivel+1)}){arquivo.suffix}"
