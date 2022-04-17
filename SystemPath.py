@@ -1,4 +1,5 @@
 from pathlib import Path
+from win32com.client import Dispatch
 
 nomesEExtensoes = (
     (("Arquivos e Pastas variados"), ("sem categoria", "pasta")),
@@ -6,10 +7,10 @@ nomesEExtensoes = (
     (("Executaveis"         ), ("exe", "msi", "jar")),
     (("Compactados"         ), ("zip", "rar", "arc", "arj", "bin", "dmg", "gz", "gzip", "hqx", "sit", "sitx", "se", "ace", "uu", "uue", "7z")),
     (("Videos"              ), ("mp4", "mov", "avi", "flv", "mwv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat")),
-    (("Textos"              ), ("txt", "pdf")),
+    (("Textos"              ), ("txt", "pdf", "rtf")),
     (("Imagens"             ), ("png", "gif", "jpg", "jpeg", "tiff", "tif", "raw", "bmp", "psd", "eps", "svg", "ai", "pic", "wmf", "webp", "dwg", "pptx", "odp")),
     (("Words"               ), ("docx", "docm", "dotx", "dotm", "doc", "dot", "odf", "odt")),
-    (("Programação"         ), ("lib", "css", "html", "js", "cpp", "c", "h", "hpp", "py")),
+    (("Programação"         ), ("lib", "css", "htm", "html", "js", "cpp", "c", "h", "hpp", "py")),
     (("Arquivos de dados"   ), ("ini", "log")),
     (("Máquinas Virtuais"   ), ("ova"))
 )
@@ -90,3 +91,9 @@ def getNovoNomeArquivoRepetido(arquivo : Path, diretorio : Path):
                 break
 
     return f"{removerExtensaoRepetisao(arquivo)} ({str(NumeroExtensaoPossivel+1)}){arquivo.suffix}"
+
+def getDestinoAtalho(atalho : Path):
+    shell = Dispatch("WScript.Shell")
+    shortcut = shell.CreateShortCut(str(atalho.absolute()))
+
+    return str(shortcut.Targetpath)

@@ -4,16 +4,20 @@ import SystemPath as sp
 diretorios = sp.lerDiretoriosArquivo("diretorios.txt")
 
 for diretorio in diretorios:
-    if not diretorio.is_dir():
+    if not diretorio.is_dir() or not str(diretorio.absolute()).replace(" ", ""):
         continue
-
+    
     for arquivo in diretorio.glob('*'):
-
+        
         if arquivo.is_dir():
             if sp.isPastaUmaPastaDoPrograma(arquivo) is True:
                 continue
 
             categoriaDoArquivo = sp.acharCategoriaArquivo("pasta")
+
+        elif arquivo.suffix == ".lnk":
+            categoriaDoArquivo = sp.acharCategoriaArquivo(sp.getDestinoAtalho(arquivo)[-3:])
+
         else:
             categoriaDoArquivo = sp.acharCategoriaArquivo(arquivo.suffix[1:])    
 
@@ -24,8 +28,5 @@ for diretorio in diretorios:
 
         if sp.checarArquivoRepetido(arquivo, novoDiretorioDoArquivo) == True:
             arquivo = arquivo.rename(sp.Path(arquivo.parent, sp.getNovoNomeArquivoRepetido(arquivo, novoDiretorioDoArquivo)))
-
+        
         moverArquivoDePasta(arquivo, novoDiretorioDoArquivo)
-
-            
-
