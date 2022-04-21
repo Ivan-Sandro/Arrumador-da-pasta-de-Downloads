@@ -7,9 +7,9 @@ nomesEExtensoes = (
     (("Executaveis"         ), ("exe", "msi", "jar")),
     (("Compactados"         ), ("zip", "rar", "arc", "arj", "bin", "dmg", "gz", "gzip", "hqx", "sit", "sitx", "se", "ace", "uu", "uue", "7z")),
     (("Videos"              ), ("mp4", "mov", "avi", "flv", "mwv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat")),
-    (("Textos"              ), ("txt", "pdf", "rtf")),
+    (("Textos"              ), ("txt", "pdf", "rtf", "doc")),
     (("Imagens"             ), ("png", "gif", "jpg", "jpeg", "tiff", "tif", "raw", "bmp", "psd", "eps", "svg", "ai", "pic", "wmf", "webp", "dwg", "pptx", "odp")),
-    (("Words"               ), ("docx", "docm", "dotx", "dotm", "doc", "dot", "odf", "odt")),
+    (("Words"               ), ("docx", "docm", "dotx", "dotm", "dot", "odf", "odt", "ods", "odp")),
     (("Programação"         ), ("lib", "css", "htm", "html", "js", "cpp", "c", "h", "hpp", "py")),
     (("Arquivos de dados"   ), ("ini", "log")),
     (("Máquinas Virtuais"   ), ("ova"))
@@ -70,7 +70,7 @@ def removerExtensaoRepetisao(arquivo : Path):
     else:
         return arquivo.stem[0:-tamanhoExtensaoRepetisao]
 
-def checarArquivoRepetido(arquivo : Path, diretorio : Path):
+def isArquivoRepetido(arquivo : Path, diretorio : Path):
     for arquivoDiretorio in diretorio.glob(f"*{arquivo.suffix}"):
         if arquivo.stem == arquivoDiretorio.stem:
             return True
